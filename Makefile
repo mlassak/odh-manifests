@@ -9,9 +9,12 @@ REPO_URL="https://github.com/opendatahub-io/odh-manifests"
 KFDEF_FILE="kfdef/kfctl_openshift.yaml"
 COMMIT_MESSAGE="Update KFdef for release $(TAG_NAME)"
 UPDATE_TO_COMMIT=master
+KUBE_LINTER_CONFIG=.kube-linter.yaml
 ifndef VERSION
 $(help)
 endif
+
+.PHONY: lint
 
 all: help
 
@@ -53,3 +56,8 @@ tag: update-kfdef-with-tag
 	git tag $(TAG_NAME)
 push-tag:
 	git push --tags
+
+# requires kube-linter to be installed (https://github.com/stackrox/kube-linter)
+lint:
+	kube-linter lint ./ --config $(KUBE_LINTER_CONFIG)
+

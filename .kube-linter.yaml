@@ -1,0 +1,6 @@
+checks:
+  ignorePaths:
+    - .github/
+    - .aicoe-ci.yaml
+    - .thoth.yaml
+    - .aicoe-ci.yaml
