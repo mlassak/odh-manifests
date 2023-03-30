@@ -1,0 +1,27 @@
+name: Sync odh-manifests with notebook controller manifests from kubeflow
+
+on:
+  workflow_dispatch
+
+jobs:
+  kubeflow-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      - name: Gather files from kubeflow and replace manifests 
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/odh-notebook-controller
+          svn export --force https://github.com/opendatahub-io/kubeflow/branches/v1.6-branch/components/notebook-controller/config ./kf-notebook-controller
+          svn export --force https://github.com/opendatahub-io/kubeflow/branches/v1.6-branch/components/odh-notebook-controller/config ./odh-notebook-controller
+      - name: Create pull request for sync changes
+        uses: peter-evans/create-pull-request@v4.2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: odh-kubeflow-sync
+          commit-message: Automated Change
+          title: Sync odh-manifests with odh-kubeflow notebook controller manifests
+          body: This is an automated pull request to sync odh-manifests with odh-kubeflow notebook controller manifests
